@@ -19,6 +19,7 @@ export function createBoard(container, opts) {
   let pending = null; // edge chosen by first tap (tap-twice mode)
   let hover = null; // edge under the mouse
   let lastSig = '';
+  let highlight = null; // moves to glow, oldest first
 
   const boardW = () => (state ? state.cols * S + 2 * M : 100);
   const boardH = () => (state ? state.rows * S + 2 * M : 100);
@@ -243,6 +244,12 @@ export function createBoard(container, opts) {
           `</g>`;
       }
     }
+    // Glow behind recent lines: the newest strongest, the others softer
+    const recent = highlight || (state.lastMove ? [state.lastMove] : []);
+    recent.forEach((m, i) => {
+      const newest = i === recent.length - 1;
+      out += line(m, newest ? 'halo newest' : 'halo', players[m.player] ? players[m.player].color : '#888');
+    });
     // Lines, and which dots are used
     const dots = new Uint8Array((rows + 1) * (cols + 1));
     for (const kind of ['h', 'v']) {
@@ -260,7 +267,11 @@ export function createBoard(container, opts) {
       }
     }
     const lm = state.lastMove;
-    if (lm) out += line(lm, 'edge last', players[lm.player].color);
+    if (lm) {
+      out += line(lm, 'edge last', players[lm.player].color);
+      // A white stripe down the middle of the newest line makes it easy to spot
+      out += line(lm, 'last-mark');
+    }
     for (let r = 0; r <= rows; r++)
       for (let c = 0; c <= cols; c++) if (dots[r * (cols + 1) + c]) out += `<circle class="dot" cx="${M + c * S}" cy="${M + r * S}" r="6"/>`;
     out += '<g class="overlay"></g>';
@@ -284,7 +295,8 @@ export function createBoard(container, opts) {
   }
 
   return {
-    render(s) {
+    render(s, recentMoves) {
+      highlight = recentMoves && recentMoves.length ? recentMoves : null;
       const sig = s.rows + 'x' + s.cols;
       const resized = sig !== lastSig;
       state = s;

@@ -334,6 +334,8 @@ export function applyMove(state, playerIndex, move, { auto = false } = {}) {
   me.score += points;
   me.extraTurns += stars;
   next.lastMove = { k, r, c, player: playerIndex, claimed: claimed.length, points, stars, auto };
+  // The last few lines, so people can see what happened while they looked away.
+  next.recent = [...(state.recent || []), { k, r, c, player: playerIndex }].slice(-24);
   next.lastEvent = null;
   next.moveCount = (state.moveCount || 0) + 1;
 
