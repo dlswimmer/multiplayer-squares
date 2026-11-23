@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cut, user-scalable=no">
+  <meta name="theme-color" content="#4f46e5">
+  <meta name="description" content="Take turns drawing lines and claim the most boxes. Play together on your own phones, tablets and computers.">
+  <title>Squares</title>
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="vendor/peerjs.min.js" defer></script>
+  <script src="vendor/qrcode.js" defer></script>
+  <script type="module" src="js/app.js"></script>
+</head>
+<body>
+  <!-- Home -------------------------------------------------------------- -->
+  <section id="screen-home" class="screen">
+    <div class="card narrow">
+      <h1 class="logo"><span class="logo-grid" aria-hidden="true"><i></i><i></i><i></i><i></i></span>Squares</h1>
+      <p class="tagline">Take turns drawing lines. Finish a box to claim it and go again!</p>
+
+      <div class="profile">
+        <label class="field">
+          <span>Your name</span>
+          <input id="my-name" maxlength="14" autocomplete="nickname" placeholder="Type your name">
+        </label>
+        <div class="field">
+          <span>Pick your animal</span>
+          <div id="my-avatar" class="avatar-picker" role="radiogroup" aria-label="Pick your animal"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="btn-host" class="btn primary big">🌐 Start a game</button>
+        <div class="join-row">
+          <input id="join-code" class="code-input" maxlength="8" placeholder="CODE" autocapitalize="characters" autocomplete="off" spellcheck="false" aria-label="Room code">
+          <button id="btn-join" class="btn big">Join</button>
+        </div>
+        <button id="btn-resume" class="btn ghost hidden"></button>
+        <button id="btn-local" class="btn ghost">📱 Play on this one device</button>
+      </div>
+      <p id="home-error" class="error" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Lobby (online) --------------------------------------------------- -->
+  <section id="screen-lobby" class="screen hidden">
+    <div class="card">
+      <div class="lobby-top">
+        <button class="btn ghost small back" data-action="leave">← Leave</button>
+        <div id="lobby-status" class="status-pill"></div>
+      </div>
+      <div class="lobby-grid">
+        <div class="share">
+          <div class="share-label">Room code</div>
+          <div id="room-code" class="room-code"></div>
+          <div id="qr" class="qr" aria-label="QR code to join"></div>
+          <div class="share-buttons">
+            <button id="btn-share" class="btn small">📤 Share link</button>
+            <button id="btn-copy" class="btn small">📋 Copy link</button>
+          </div>
+          <p class="hint">Others can scan the code, open the link, or type the room code on the Squares page.</p>
+        </div>
+        <div class="lobby-main">
+          <h2>Players</h2>
+          <ul id="lobby-players" class="player-list"></ul>
+          <div class="field">
+            <span>My color</span>
+            <div id="my-color" class="color-picker"></div>
+          </div>
+          <div id="host-settings">
+            <h2>Board size</h2>
+            <div id="size-presets" class="size-presets"></div>
+            <div class="size-custom">
+              <label>Rows <input id="rows" type="number" min="2" max="20" inputmode="numeric"></label>
+              <span>×</span>
+              <label>Columns <input id="cols" type="number" min="2" max="20" inputmode="numeric"></label>
+            </div>
+            <button id="btn-start" class="btn primary big">▶ Start game</button>
+          </div>
+          <p id="guest-wait" class="wait hidden"></p>
+        </div>
+      </div>
+      <p id="lobby-error" class="error" role="alert"></p>
+    </div>
+  </section>
+
+  <!-- Local setup ------------------------------------------------------ -->
+  <section id="screen-local" class="screen hidden">
+    <div class="card narrow">
+      <div class="lobby-top">
+        <button class="btn ghost small back" data-action="home">← Back</button>
+      </div>
+      <h2>Who's playing?</h2>
+      <ul id="local-players" class="player-list editable"></ul>
+      <div class="row-buttons">
+        <button id="btn-local-add" class="btn small">＋ Add player</button>
+      </div>
+      <h2>Board size</h2>
+      <div id="local-size-presets" class="size-presets"></div>
+      <div class="size-custom">
+        <label>Rows <input id="local-rows" type="number" min="2" max="20" inputmode="numeric"></label>
+        <span>×</span>
+        <label>Columns <input id="local-cols" type="number" min="2" max="20" inputmode="numeric"></label>
+      </div>
+      <button id="btn-local-start" class="btn primary big">▶ Start game</button>
+    </div>
+  </section>
+
+  <!-- Game -------------------------------------------------------------- -->
+  <section id="screen-game" class="screen game hidden">
+    <header class="game-top">
+      <button id="btn-menu" class="icon-btn" aria-label="Menu">☰</button>
+      <div id="scores" class="scores"></div>
+    </header>
+    <div id="turn-banner" class="turn-banner"></div>
+    <div id="board" class="board"></div>
+    <div class="zoom-controls">
+      <button id="zoom-in" class="icon-btn" aria-label="Zoom in">＋</button>
+      <button id="zoom-out" class="icon-btn" aria-label="Zoom out">－</button>
+      <button id="zoom-fit" class="icon-btn" aria-label="Show whole board">⤢</button>
+    </div>
+    <div id="toast" class="toast" role="status"></div>
+  </section>
+
+  <!-- Menu ------------------------------------------------------------- -->
+  <div id="menu" class="sheet hidden" role="dialog" aria-modal="true" aria-label="Menu">
+    <div class="sheet-body">
+      <div id="menu-room" class="menu-room"></div>
+      <label class="toggle"><input type="checkbox" id="opt-confirm"> Tap a line twice to draw it (stops accidents on touch screens)</label>
+      <label class="toggle"><input type="checkbox" id="opt-sound"> Sounds</label>
+      <button class="btn" data-action="close-menu">Back to the game</button>
+      <button class="btn danger" data-action="leave">Leave game</button>
+    </div>
+  </div>
+
+  <!-- Game over -------------------------------------------------------- -->
+  <div id="over" class="sheet hidden" role="dialog" aria-modal="true" aria-label="Game over">
+    <div class="sheet-body center">
+      <div id="over-emoji" class="over-emoji"></div>
+      <h2 id="over-title"></h2>
+      <ol id="over-scores" class="over-scores"></ol>
+      <div id="over-host" class="row-buttons">
+        <button id="btn-again" class="btn primary big">🔁 Play again</button>
+        <button id="btn-to-lobby" class="btn">Change board or players</button>
+      </div>
+      <p id="over-guest" class="wait"></p>
+      <button class="btn ghost small" data-action="close-over">Look at the board</button>
+    </div>
+  </div>
+
+  <noscript><p class="error">Squares needs JavaScript turned on.</p></noscript>
+</body>
+</html>
