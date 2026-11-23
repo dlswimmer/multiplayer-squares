@@ -79,16 +79,17 @@ export function createBoard(container, opts) {
     const hr = Math.round(gy), hc = Math.floor(gx);
     if (hr >= 0 && hr <= state.rows && hc >= 0 && hc < state.cols) {
       const d = Math.abs(gy - hr);
-      if (d < bestD) { best = { k: 'h', r: hr, c: hc }; bestD = d; }
+      if (d < bestD && state.h[hr * state.cols + hc] !== -2) { best = { k: 'h', r: hr, c: hc }; bestD = d; }
     }
     const vc = Math.round(gx), vr = Math.floor(gy);
     if (vc >= 0 && vc <= state.cols && vr >= 0 && vr < state.rows) {
       const d = Math.abs(gx - vc);
-      if (d < bestD) { best = { k: 'v', r: vr, c: vc }; bestD = d; }
+      if (d < bestD && state.v[vr * (state.cols + 1) + vc] !== -2) { best = { k: 'v', r: vr, c: vc }; bestD = d; }
     }
     return best;
   }
-  const free = (e) => e && state[e.k][e.k === 'h' ? e.r * state.cols + e.c : e.r * (state.cols + 1) + e.c] < 0;
+  const val = (e) => state[e.k][e.k === 'h' ? e.r * state.cols + e.c : e.r * (state.cols + 1) + e.c];
+  const free = (e) => e && val(e) === -1;
   const same = (a, b) => a && b && a.k === b.k && a.r === b.r && a.c === b.c;
   const canPlay = () => state && state.phase === 'playing' && opts.canPlay();
 
@@ -209,36 +210,59 @@ export function createBoard(container, opts) {
 
   function drawBoard() {
     const { rows, cols, players } = state;
+    const values = state.values || [];
+    const stars = state.stars || [];
     let out = '';
-    // Claimed boxes
+    // Boxes: claimed ones get the owner's color and emoji, bonus ones a badge
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const o = state.boxes[r * cols + c];
-        if (o < 0) continue;
+        const i = r * cols + c;
+        const o = state.boxes[i];
+        if (o === -2) continue;
+        const x = M + c * S, y = M + r * S, cx = x + S / 2, cy = y + S / 2;
+        if (o === -4) {
+          // Blocked square: a rock nobody can claim
+          out += `<rect class="blocked" x="${x + 3}" y="${y + 3}" width="${S - 6}" height="${S - 6}" rx="8"/>` +
+            `<text x="${cx}" y="${cy + 2}" font-size="${S * 0.42}">🪨</text>`;
+          continue;
+        }
+        const badge = stars[i] ? '⭐' : values[i] > 1 ? '×' + values[i] : '';
+        if (o === -1) {
+          if (badge) {
+            out += `<rect class="bonus-bg${stars[i] ? ' star' : ''}" x="${x + 4}" y="${y + 4}" width="${S - 8}" height="${S - 8}" rx="8"/>` +
+              `<text class="bonus" x="${cx}" y="${cy + 1}" font-size="${stars[i] ? S * 0.42 : S * 0.36}">${badge}</text>`;
+          }
+          continue;
+        }
         const p = players[o];
         const isNew = state.lastMove && state.lastMove.claimed && isAdjacent(state.lastMove, r, c);
-        out += `<g class="box${isNew ? ' fresh' : ''}" style="--cx:${M + c * S + S / 2}px;--cy:${M + r * S + S / 2}px">` +
-          `<rect x="${M + c * S + 3}" y="${M + r * S + 3}" width="${S - 6}" height="${S - 6}" rx="8" fill="${p.color}" fill-opacity="0.28"/>` +
-          `<text x="${M + c * S + S / 2}" y="${M + r * S + S / 2 + 2}" font-size="${S * 0.5}">${p.avatar || ''}</text></g>`;
+        out += `<g class="box${isNew ? ' fresh' : ''}">` +
+          `<rect x="${x + 3}" y="${y + 3}" width="${S - 6}" height="${S - 6}" rx="8" fill="${p.color}" fill-opacity="0.28"/>` +
+          `<text x="${cx}" y="${cy + 2}" font-size="${S * 0.5}">${p.avatar || ''}</text>` +
+          (badge ? `<text class="badge" x="${x + S - 14}" y="${y + 14}" font-size="${S * 0.2}">${badge}</text>` : '') +
+          `</g>`;
       }
     }
-    // Lines
+    // Lines, and which dots are used
+    const dots = new Uint8Array((rows + 1) * (cols + 1));
     for (const kind of ['h', 'v']) {
       const w = kind === 'h' ? cols : cols + 1;
       const n = kind === 'h' ? rows + 1 : rows;
       for (let r = 0; r < n; r++) {
         for (let c = 0; c < w; c++) {
           const o = state[kind][r * w + c];
+          if (o === -2) continue;
+          dots[r * (cols + 1) + c] = 1;
+          dots[(kind === 'h' ? r : r + 1) * (cols + 1) + (kind === 'h' ? c + 1 : c)] = 1;
           const e = { k: kind, r, c };
-          out += o < 0 ? line(e, 'slot') : line(e, 'edge', players[o].color);
+          out += o === -1 ? line(e, 'slot') : o === -3 ? line(e, 'edge preset') : line(e, 'edge', players[o].color);
         }
       }
     }
     const lm = state.lastMove;
     if (lm) out += line(lm, 'edge last', players[lm.player].color);
-    // Dots
     for (let r = 0; r <= rows; r++)
-      for (let c = 0; c <= cols; c++) out += `<circle class="dot" cx="${M + c * S}" cy="${M + r * S}" r="6"/>`;
+      for (let c = 0; c <= cols; c++) if (dots[r * (cols + 1) + c]) out += `<circle class="dot" cx="${M + c * S}" cy="${M + r * S}" r="6"/>`;
     out += '<g class="overlay"></g>';
     return out;
   }

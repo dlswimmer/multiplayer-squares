@@ -25,8 +25,8 @@
           <input id="my-name" maxlength="14" autocomplete="nickname" placeholder="Type your name">
         </label>
         <div class="field">
-          <span>Pick your animal</span>
-          <div id="my-avatar" class="avatar-picker" role="radiogroup" aria-label="Pick your animal"></div>
+          <span>Pick your emoji</span>
+          <div id="my-avatar" class="avatar-picker" role="radiogroup" aria-label="Pick your emoji"></div>
         </div>
       </div>
 
@@ -76,8 +76,11 @@
               <span>×</span>
               <label>Columns <input id="cols" type="number" min="2" max="20" inputmode="numeric"></label>
             </div>
+            <div id="lobby-options" class="options"></div>
+            <button id="btn-add-bot" class="btn small add-bot">🤖 Add a computer player</button>
             <button id="btn-start" class="btn primary big">▶ Start game</button>
           </div>
+          <div id="guest-options"></div>
           <p id="guest-wait" class="wait hidden"></p>
         </div>
       </div>
@@ -95,6 +98,7 @@
       <ul id="local-players" class="player-list editable"></ul>
       <div class="row-buttons">
         <button id="btn-local-add" class="btn small">＋ Add player</button>
+        <button id="btn-local-bot" class="btn small">🤖 Add computer player</button>
       </div>
       <h2>Board size</h2>
       <div id="local-size-presets" class="size-presets"></div>
@@ -103,6 +107,7 @@
         <span>×</span>
         <label>Columns <input id="local-cols" type="number" min="2" max="20" inputmode="numeric"></label>
       </div>
+      <div id="local-options" class="options"></div>
       <button id="btn-local-start" class="btn primary big">▶ Start game</button>
     </div>
   </section>
@@ -112,9 +117,14 @@
     <header class="game-top">
       <button id="btn-menu" class="icon-btn" aria-label="Menu">☰</button>
       <div id="scores" class="scores"></div>
+      <button id="btn-react" class="icon-btn" aria-label="Send a reaction">😀</button>
     </header>
+    <div id="react-tray" class="react-tray hidden"></div>
     <div id="turn-banner" class="turn-banner"></div>
+    <div id="timer" class="timer hidden"><i></i><span></span></div>
     <div id="board" class="board"></div>
+    <div id="powers" class="powers hidden"></div>
+    <div id="reactions" class="reactions" aria-live="polite"></div>
     <div class="zoom-controls">
       <button id="zoom-in" class="icon-btn" aria-label="Zoom in">＋</button>
       <button id="zoom-out" class="icon-btn" aria-label="Zoom out">－</button>
@@ -140,8 +150,9 @@
       <div id="over-emoji" class="over-emoji"></div>
       <h2 id="over-title"></h2>
       <ol id="over-scores" class="over-scores"></ol>
+      <div id="over-tally" class="over-tally"></div>
       <div id="over-host" class="row-buttons">
-        <button id="btn-again" class="btn primary big">🔁 Play again</button>
+        <button id="btn-again" class="btn primary big">🔁 Rematch</button>
         <button id="btn-to-lobby" class="btn">Change board or players</button>
       </div>
       <p id="over-guest" class="wait"></p>
