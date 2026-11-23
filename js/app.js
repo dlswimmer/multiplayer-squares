@@ -884,6 +884,21 @@ function nameOf(game, i, you) {
   return session.mode !== 'local' && i === you ? 'You' : p.name;
 }
 
+/**
+ * Lines drawn since this player's own last line (what they may have missed),
+ * oldest first. Falls back to just the last line.
+ */
+function recentForViewer(game, viewer) {
+  const list = game.recent || [];
+  if (!list.length) return [];
+  let start = 0;
+  for (let i = list.length - 1; i >= 0; i--) {
+    if (list[i].player === viewer) { start = i + 1; break; }
+  }
+  const since = list.slice(start);
+  return since.length ? since : list.slice(-1);
+}
+
 function renderGame() {
   const { room, you } = session.view;
   const game = room.game;
@@ -945,7 +960,7 @@ function renderGame() {
       <button class="power" data-power="skip" ${canSkip ? '' : 'disabled'}>🚫<span>${game.skipNext ? 'Skipping!' : 'Skip next'}</span></button>`;
   } else pw.classList.add('hidden');
 
-  board.render(game);
+  board.render(game, recentForViewer(game, local ? game.turn : you));
   if (wasHidden) requestAnimationFrame(() => board.fit());
 
   $('menu-room').innerHTML = (room.code ? `Room ${room.code}` : 'Playing on this device') +

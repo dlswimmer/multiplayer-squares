@@ -207,3 +207,9 @@ test('hard computer gives away little and finishes big boards quickly', () => {
   assert.equal(g.phase, 'over');
   assert.ok(Date.now() - t0 < 8000, 'took ' + (Date.now() - t0) + 'ms');
 });
+
+test('recent keeps the last lines in order', () => {
+  let g = G(4, 4, 3);
+  for (const m of [{ k: 'h', r: 0, c: 0 }, { k: 'h', r: 0, c: 1 }, { k: 'h', r: 0, c: 2 }]) g = applyMove(g, g.turn, m).state;
+  assert.deepEqual(g.recent.map((m) => [m.player, m.c]), [[0, 0], [1, 1], [2, 2]]);
+});
