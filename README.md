@@ -25,12 +25,9 @@ There is no server of ours and no accounts. The host's device holds the game. Ot
 - If the host reloads, the home screen offers *Go back to your game*, and the other players reconnect on their own.
 - Some strict networks (some school or work Wi-Fi) block direct connections between devices. Home Wi-Fi and phone data normally work.
 
-## Turning on GitHub Pages
+## Deploying to GitHub Pages
 
-1. On GitHub, open the repository's **Settings → Pages**.
-2. Under **Build and deployment**, set **Source** to *Deploy from a branch*.
-3. Pick the **main** branch and the **/ (root)** folder, then **Save**.
-4. After a minute or two the game is live at https://dlswimmer.github.io/multiplayer-squares/.
+The workflow in `.github/workflows/pages.yml` runs the tests and publishes the game on every push to `main`. In the repository's **Settings → Pages**, **Source** must be set to *GitHub Actions*. You can also run it by hand from the **Actions** tab (*Deploy to GitHub Pages → Run workflow*).
 
 ## Developing
 
