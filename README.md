@@ -11,6 +11,25 @@ Play at **https://dlswimmer.github.io/multiplayer-squares/** once GitHub Pages i
 
 Board size can be anything from 2×2 to 20×20 boxes (rows and columns are set separately).
 
+## Game options
+
+Picked by the host (or on the setup screen when playing on one device) before each game:
+
+- **Board shape:** square, plus, heart, holes, or 🎲 Surprise (a new random shape each game).
+- **Blocked squares:** 🪨 rocks on a few or lots of squares. Nobody can claim them.
+- **Lines to start:** a few, some or lots of grey lines already drawn. They never leave a box nearly finished.
+- **Bonus squares:** ×2 and ×3 squares are worth more points; ⭐ squares give a free extra turn you use later.
+- **Power-ups:** everyone gets one ⏩ Double (draw two lines in a row) and one 🚫 Skip (skip the next player, 3+ players).
+- **Teams:** 2, 3 or 4 teams. Team mates share points and turns alternate between teams. The host taps a player's team to move them.
+- **Turn timer:** 10, 20, 30 or 60 seconds. When time runs out a random line is drawn for you.
+
+## Extras
+
+- **Computer players** (🤖 Easy, Medium or Hard) can fill any seat, online or on one device. Tap the level to change it.
+- **Emoji:** pick from 30 emoji; your boxes show it. Pick your color in the lobby.
+- **Reactions:** tap 😀 during a game to send a reaction everyone sees.
+- **Scoreboard:** wins are counted across games, and *Rematch* starts a new game with the same players and options.
+
 ## Phones, tablets and computers
 
 - Pinch to zoom and drag to move around the board. On a computer, use the mouse wheel. The ＋ / － / ⤢ buttons work everywhere (⤢ shows the whole board).

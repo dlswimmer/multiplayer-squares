@@ -275,3 +275,92 @@ input:focus { outline: none; border-color: var(--accent); }
   .room-code { font-size: 2.2rem; }
   .size-presets { grid-template-columns: repeat(2, 1fr); }
 }
+
+/* ---- Game options ------------------------------------------------------ */
+.options { margin-bottom: 14px; }
+.opt-row { margin: 10px 0 12px; }
+.opt-label { font-weight: 800; font-size: 0.9rem; color: var(--muted); margin-bottom: 6px; }
+.opt-hint { font-size: 0.8rem; color: var(--muted); margin-top: 6px; }
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button {
+  font: inherit; font-weight: 700; font-size: 0.9rem; color: var(--text);
+  padding: 8px 12px; min-height: 40px; border-radius: 12px; cursor: pointer;
+  border: 2px solid var(--line); background: var(--bg); touch-action: manipulation;
+}
+.seg button[aria-pressed='true'] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.seg button:disabled { cursor: default; }
+.opt-summary { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.opt-summary span { background: var(--bg); border-radius: 99px; padding: 5px 10px; font-weight: 700; font-size: 0.85rem; }
+.add-bot { width: 100%; margin-bottom: 10px; }
+.tag-btn {
+  font: inherit; font-size: 0.75rem; font-weight: 800; cursor: pointer; color: var(--text);
+  background: var(--card); border: 2px solid var(--line); border-radius: 99px; padding: 4px 9px; min-height: 32px; flex: none;
+}
+.tag-btn.team, .tag.team { color: #fff; background: var(--tc); border-color: var(--tc); }
+
+/* ---- In-game extras ------------------------------------------------------ */
+.chip .xt { font-size: 0.85rem; }
+.chip .pw { font-size: 0.8rem; letter-spacing: -2px; }
+.chip.team-chip { border-color: var(--pc); background: color-mix(in srgb, var(--pc) 14%, var(--card)); }
+.chip.team-chip .nm { color: var(--pc); }
+.chip.member { border-bottom: 4px solid var(--pc); }
+@media (max-width: 560px) { .chip.team-chip .nm { display: inline; } }
+
+.timer {
+  position: relative; height: 22px; margin: 0 16px 4px; border-radius: 99px; background: var(--card);
+  overflow: hidden; box-shadow: inset 0 0 0 2px var(--line);
+}
+.timer i { position: absolute; left: 0; top: 0; bottom: 0; background: #2a9d4b; border-radius: 99px; transition: width 0.15s linear; }
+.timer.low i { background: var(--danger); }
+.timer span { position: relative; display: block; text-align: center; font-weight: 800; font-size: 0.8rem; line-height: 22px; }
+
+.powers {
+  position: absolute; left: max(12px, env(safe-area-inset-left)); bottom: max(12px, env(safe-area-inset-bottom));
+  display: flex; gap: 8px; z-index: 2;
+}
+.power {
+  font: inherit; font-weight: 800; font-size: 1.3rem; cursor: pointer; color: var(--text);
+  display: flex; flex-direction: column; align-items: center; gap: 0; padding: 6px 10px; min-width: 64px;
+  border-radius: 16px; border: 0; background: var(--card); box-shadow: var(--shadow); touch-action: manipulation;
+}
+.power span { font-size: 0.7rem; }
+.power:disabled { opacity: 0.35; cursor: not-allowed; }
+.power:not(:disabled) { animation: glow 1.6s ease-in-out infinite; }
+@keyframes glow { 50% { box-shadow: 0 0 0 4px color-mix(in srgb, var(--accent) 45%, transparent), var(--shadow); } }
+
+.react-tray {
+  position: absolute; right: max(8px, env(safe-area-inset-right)); top: calc(max(8px, env(safe-area-inset-top)) + 56px);
+  z-index: 5; display: grid; grid-template-columns: repeat(4, 48px); gap: 4px; padding: 8px;
+  background: var(--card); border-radius: 18px; box-shadow: var(--shadow);
+}
+.react-tray button { font-size: 1.7rem; width: 48px; height: 48px; border: 0; border-radius: 12px; background: var(--bg); cursor: pointer; touch-action: manipulation; }
+.reactions { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 4; }
+.reaction {
+  position: absolute; bottom: 70px; display: flex; flex-direction: column; align-items: center;
+  animation: floatup 2.6s ease-out forwards;
+}
+.reaction .big { font-size: 3.2rem; line-height: 1; }
+.reaction .who { font-size: 0.8rem; font-weight: 800; background: var(--card); padding: 2px 8px; border-radius: 99px; box-shadow: var(--shadow); white-space: nowrap; }
+@keyframes floatup {
+  0% { transform: translateY(30px) scale(0.4); opacity: 0; }
+  15% { transform: translateY(0) scale(1.15); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateY(-45vh) scale(1); opacity: 0; }
+}
+
+/* Board extras */
+.board-svg .edge.preset { stroke: #9aa0bd; stroke-width: 7; }
+.board-svg .blocked { fill: color-mix(in srgb, var(--text) 16%, transparent); }
+.board-svg .bonus-bg { fill: color-mix(in srgb, #f39c12 14%, transparent); }
+.board-svg .bonus-bg.star { fill: color-mix(in srgb, #f5c518 20%, transparent); }
+.board-svg .bonus { font-weight: 900; fill: #c77700; opacity: 0.85; }
+.board-svg .badge { font-weight: 900; fill: var(--text); }
+
+/* Game over extras */
+.over-scores li .nm small { display: block; font-size: 0.75rem; color: var(--muted); font-weight: 700; }
+.over-tally { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+.over-tally .tally-title { width: 100%; font-weight: 800; color: var(--muted); font-size: 0.85rem; }
+.over-tally span { background: var(--bg); border-radius: 99px; padding: 5px 10px; font-weight: 700; font-size: 0.9rem; }
+.confetti.emoji { background: none !important; width: auto; height: auto; font-size: 2rem; }
+
+.avatar-picker button { width: 44px; height: 44px; font-size: 1.45rem; }
