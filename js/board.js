@@ -213,14 +213,24 @@ export function createBoard(container, opts) {
     const { rows, cols, players } = state;
     const values = state.values || [];
     const stars = state.stars || [];
-    let out = '';
+    let out = '<defs><pattern id="hole-hatch" width="9" height="9" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">' +
+      '<rect class="hole-bg" width="9" height="9"/><line class="hole-line" x1="0" y1="0" x2="0" y2="9"/></pattern></defs>';
     // Boxes: claimed ones get the owner's color and emoji, bonus ones a badge
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
         const i = r * cols + c;
         const o = state.boxes[i];
-        if (o === -2) continue;
         const x = M + c * S, y = M + r * S, cx = x + S / 2, cy = y + S / 2;
+        if (o === -2) {
+          // A hole in the board shape. When lines run around most of it, it
+          // looks just like a normal square, so shade it in to show it can't
+          // be won.
+          const sides = [state.h[r * cols + c], state.h[(r + 1) * cols + c], state.v[r * (cols + 1) + c], state.v[r * (cols + 1) + c + 1]];
+          if (sides.filter((e) => e !== -2).length >= 3) {
+            out += `<rect class="hole" x="${x + 4}" y="${y + 4}" width="${S - 8}" height="${S - 8}" rx="8" fill="url(#hole-hatch)"/>`;
+          }
+          continue;
+        }
         if (o === -4) {
           // Blocked square: a rock nobody can claim
           out += `<rect class="blocked" x="${x + 3}" y="${y + 3}" width="${S - 6}" height="${S - 6}" rx="8"/>` +
