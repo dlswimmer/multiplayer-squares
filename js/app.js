@@ -793,7 +793,7 @@ function renderSizePicker(presetsId, rowsId, colsId, target, onChange) {
 
 /** The game options picker (board shape, bonus squares, power-ups, teams, timer). */
 const OPTION_ROWS = [
-  { key: 'shape', label: 'Board shape', hint: 'The board is a different shape. 🎲 Surprise makes a new one every game.', choices: SHAPES.map((s) => ({ v: s.id, label: `${s.icon} ${s.label}` })) },
+  { key: 'shape', label: 'Board shape', hint: 'The board is a different shape. Striped squares are holes and can\'t be won. 🎲 Surprise makes a new one every game.', choices: SHAPES.map((s) => ({ v: s.id, label: `${s.icon} ${s.label}` })) },
   { key: 'blocked', label: 'Blocked squares', hint: '🪨 Rocks sit on some squares. Nobody can claim them.', choices: [{ v: 0, label: 'Off' }, { v: 1, label: '🪨 A few' }, { v: 2, label: 'Lots' }] },
   { key: 'presets', label: 'Lines to start', hint: 'Some grey lines are already drawn when the game starts.', choices: [{ v: 0, label: 'Off' }, { v: 1, label: 'A few' }, { v: 2, label: 'Some' }, { v: 3, label: 'Lots' }] },
   { key: 'bonus', label: 'Bonus squares', hint: '×2 and ×3 squares are worth more points. ⭐ squares give you a free extra turn later.', choices: [{ v: false, label: 'Off' }, { v: true, label: '⭐ On' }] },

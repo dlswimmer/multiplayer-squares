@@ -368,3 +368,8 @@ input:focus { outline: none; border-color: var(--accent); }
 .confetti.emoji { background: none !important; width: auto; height: auto; font-size: 2rem; }
 
 .avatar-picker button { width: 44px; height: 44px; font-size: 1.45rem; }
+
+/* Holes in the board shape (not part of the game) */
+.board-svg .hole-bg { fill: color-mix(in srgb, var(--text) 6%, transparent); }
+.board-svg .hole-line { stroke: color-mix(in srgb, var(--text) 22%, transparent); stroke-width: 3; }
+.board-svg .hole { stroke: color-mix(in srgb, var(--text) 18%, transparent); stroke-width: 2; stroke-dasharray: 5 4; }
